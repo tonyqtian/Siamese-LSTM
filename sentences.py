@@ -13,7 +13,7 @@ print("Loading Word2Vec")
 # with open("../quora-data/gl_w2v_300d_gensim.pkl", 'wb') as outputfile:
 #     pickle.dump(model, outputfile)
 
-with open("../quora_data/gl_w2v_300d_gensim.pkl", 'rb') as inputfile:
+with open("../quora-data/gl_w2v_300d_gensim.pkl", 'rb') as inputfile:
     model = pickle.load(inputfile)
 
 def prepare_data(data):
