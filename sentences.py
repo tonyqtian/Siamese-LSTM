@@ -9,8 +9,11 @@ print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
 
 model = gensim.models.KeyedVectors.load_word2vec_format("../GoogleNews-vectors-negative300.bin.gz",binary=True)
+with open("../quora_data/gl_w2v_300d_gensim.pkl") as outputfile:
+    pickle.dump(model, outputfile)
 
-
+# with open("../quora_data/gl_w2v_300d_gensim.pkl", 'rb') as inputfile:
+#     model = pickle.load(inputfile)
 
 def prepare_data(data):
     xa1=[]
