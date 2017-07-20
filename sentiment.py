@@ -11,7 +11,7 @@ from sklearn.svm import SVC
 # In[2]:
 
 lst=lstm(False)
-train=pickle.load(open("kaggle.p",'rb'))
+train=pickle.load(open("kaggle.p",'rb'), encoding='latin1')
 
 
 # In[8]:

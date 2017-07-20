@@ -4,19 +4,19 @@ from lstm import *
 
 sls=lstm("new.p",load=False,training=True)
 
-train=pickle.load(open("stsallrmf.p","rb"))#[:-8]
+train=pickle.load(open("stsallrmf.p","rb"), encoding='latin1')#[:-8]
 if training==True:
     print("Pre-training")
     sls.train_lstm(train,66)
     print("Pre-training done")
-    train=pickle.load(open("semtrain.p",'rb'))
+    train=pickle.load(open("semtrain.p",'rb'), encoding='latin1')
     if Syn_aug==True:
         train=expand(train)
         sls.train_lstm(train,375)
     else:
         sls.train_lstm(train,330)
 
-test=pickle.load(open("semtest.p",'rb'))
+test=pickle.load(open("semtest.p",'rb'), encoding='latin1')
 print(sls.chkterr2(test))
 #Example
 sa="A truly wise man"

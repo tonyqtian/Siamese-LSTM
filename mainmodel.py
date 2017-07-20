@@ -100,7 +100,7 @@ mask21 = tensor.matrix('mask21', dtype=config.floatX)
 emb11=theano.tensor.ftensor3('emb11')
 emb21=theano.tensor.ftensor3('emb21')
 if training==False:
-    newp=pickle.load(open("bestsem.p",'rb'))
+    newp=pickle.load(open("bestsem.p",'rb'), encoding='latin1')
 tnewp=init_tparams(newp)
 trng = RandomStreams(1234)
 use_noise = theano.shared(numpy_floatX(0.))
@@ -134,19 +134,19 @@ if training==True:
     f_grad_shared, f_update = adadelta(lr, tnewp, grads,emb11,mask11,emb21,mask21,y, cost)
 
 
-train=pickle.load(open("stsallrmf.p","rb"))#[:-8]
+train=pickle.load(open("stsallrmf.p","rb"), encoding='latin1')#[:-8]
 if training==True:
     print("Pre-training")
     train_lstm(train,66)
     print("Pre-training done")
-    train=pickle.load(open("semtrain.p",'rb'))
+    train=pickle.load(open("semtrain.p",'rb'), encoding='latin1')
     if Syn_aug==True:
         train=expand(train)
         train_lstm(train,375)
     else:
         train_lstm(train,330)
 
-test=pickle.load(open("semtest.p",'rb'))
+test=pickle.load(open("semtest.p",'rb'), encoding='latin1')
 print(chkterr2(test))
 
 #Example

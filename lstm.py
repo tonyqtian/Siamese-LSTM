@@ -264,7 +264,7 @@ class lstm():
         emb11=theano.tensor.ftensor3('emb11')
         emb21=theano.tensor.ftensor3('emb21')
         if load==True:
-            newp=pickle.load(open(nam,'rb'))
+            newp=pickle.load(open(nam,'rb'), encoding='latin1')
         tnewp=init_tparams(newp)
         trng = RandomStreams(1234)
         use_noise = theano.shared(numpy_floatX(0.))
@@ -398,10 +398,10 @@ class lstm():
         emb1=np.swapaxes(trconv,1,2)
         return self.f2sim(emb1,mas1,emb2,mas2)
 
-d2=pickle.load(open("synsem.p",'rb'))
+d2=pickle.load(open("synsem.p",'rb'), encoding='latin1')
 dtr=pickle.load(open("dwords.p",'rb'), encoding='latin1')
 #d2=dtr
-#model=pickle.load(open("Semevalembed.p","rb"))
+#model=pickle.load(open("Semevalembed.p","rb"), encoding='latin1')
 
 
 
