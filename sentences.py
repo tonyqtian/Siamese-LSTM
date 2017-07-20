@@ -2,13 +2,13 @@ import numpy as np
 import numpy
 import pickle
 import gensim
-from gensim.models import word2vec
+# from gensim.models import word2vec
 d2=pickle.load(open("synsem.p",'rb'))
-dtr=pickle.load(open("dwords.p",'rb'))
+dtr=pickle.load(open("dwords.p", 'rb'), encoding='latin1')
 print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
 
-model = word2vec.Word2Vec.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz",binary=True)
+model = gensim.models.KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz",binary=True)
 
 
 
