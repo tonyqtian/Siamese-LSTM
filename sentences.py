@@ -2,6 +2,7 @@ import numpy as np
 import numpy
 import pickle
 import gensim
+import random
 # from gensim.models import word2vec
 d2=pickle.load(open("synsem.p",'rb'), encoding='latin1')
 dtr=pickle.load(open("dwords.p", 'rb'), encoding='latin1')
@@ -9,7 +10,7 @@ print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
 
 model = gensim.models.KeyedVectors.load_word2vec_format("../GoogleNews-vectors-negative300.bin.gz",binary=True)
-with open("../quora_data/gl_w2v_300d_gensim.pkl") as outputfile:
+with open("../quora_data/gl_w2v_300d_gensim.pkl", 'wb') as outputfile:
     pickle.dump(model, outputfile)
 
 # with open("../quora_data/gl_w2v_300d_gensim.pkl", 'rb') as inputfile:
