@@ -5,7 +5,7 @@ and download the file: GoogleNews-vectors-negative300.bin.gz
 Set training=False if you want to load trained weights
 Files:
 1. semtrain.p- training data (SemEval 2014)
-2. semtest.p- testing date (SemEval 2014)
+2. semtest.p- testing data (SemEval 2014)
 3. stsallrmf.p- all STS data.
 
 Scripts: (in examples folder)
