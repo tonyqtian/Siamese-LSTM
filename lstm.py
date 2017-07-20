@@ -42,18 +42,18 @@ def numpy_floatX(data):
     return numpy.asarray(data, dtype=config.floatX)
 def zipp(params, tparams):
     
-    for kk, vv in params.iteritems():
+    for kk, vv in params.items():
         tparams[kk].set_value(vv)
 
 
 def unzip(zipped):
     new_params = OrderedDict()
-    for kk, vv in zipped.iteritems():
+    for kk, vv in zipped.items():
         new_params[kk] = vv.get_value()
     return new_params
 def init_tparams(params):
     tparams = OrderedDict()
-    for kk, pp in params.iteritems():
+    for kk, pp in params.items():
         tparams[kk] = theano.shared(params[kk], name=kk)
     return tparams
 
@@ -116,7 +116,7 @@ def getpl2(prevlayer,pre,mymask,used,rrng,size,tnewp):
                                         prefix=pre,
                                         mask=mymask,nhd=size)
     if used:
-        print "Added dropout"
+        print("Added dropout")
         proj = dropout_layer(proj, use_noise, rrng,0.5)
         
     return proj
@@ -172,13 +172,13 @@ def lstm_layer2(tparams, state_below, options, prefix='lstm', mask=None,nhd=None
 def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
-                    for k, p in tparams.iteritems()]
+                    for k, p in tparams.items()]
     running_up2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                  name='%s_rup2' % k)
-                   for k, p in tparams.iteritems()]
+                   for k, p in tparams.items()]
     running_grads2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                     name='%s_rgrad2' % k)
-                      for k, p in tparams.iteritems()]
+                      for k, p in tparams.items()]
 
     zgup = [(zg, g) for zg, g in zip(zipped_grads, grads)]
     rg2up = [(rg2, (0.95 * rg2 + 0.05* (g ** 2)))
@@ -193,7 +193,7 @@ def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
                                      running_grads2)]
     ru2up = [(ru2, (0.95 * ru2 + 0.05 * (ud ** 2)))
              for ru2, ud in zip(running_up2,updir)]
-    param_up = [(p, p + ud) for p, ud in zip(tparams.values(), updir)]
+    param_up = [(p, p + ud) for p, ud in zip(list(tparams.values()), updir)]
 
     f_update = theano.function([lr], [], updates=ru2up + param_up,
                                on_unused_input='ignore',
@@ -204,11 +204,11 @@ def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 def sgd(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     
     gshared = [theano.shared(p.get_value() * 0., name='%s_grad' % k)
-               for k, p in tparams.iteritems()]
+               for k, p in tparams.items()]
     gsup = [(gs, g) for gs, g in zip(gshared, grads)]
     f_grad_shared = theano.function([emb11,mask11,emb21,mask21,y], cost, updates=gsup,
                                     name='sgd_f_grad_shared')
-    pup = [(p, p - lr * g) for p, g in zip(tparams.values(), gshared)]
+    pup = [(p, p - lr * g) for p, g in zip(list(tparams.values()), gshared)]
     f_update = theano.function([lr], [], updates=pup,
                                name='sgd_f_update')
 
@@ -218,13 +218,13 @@ def sgd(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
-                    for k, p in tparams.iteritems()]
+                    for k, p in tparams.items()]
     running_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                    name='%s_rgrad' % k)
-                     for k, p in tparams.iteritems()]
+                     for k, p in tparams.items()]
     running_grads2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                     name='%s_rgrad2' % k)
-                      for k, p in tparams.iteritems()]
+                      for k, p in tparams.items()]
 
     zgup = [(zg, g) for zg, g in zip(zipped_grads, grads)]
     rgup = [(rg, 0.95 * rg + 0.05 * g) for rg, g in zip(running_grads, grads)]
@@ -237,12 +237,12 @@ def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 
     updir = [theano.shared(p.get_value() * numpy_floatX(0.),
                            name='%s_updir' % k)
-             for k, p in tparams.iteritems()]
+             for k, p in tparams.items()]
     updir_new = [(ud, 0.9 * ud - 1e-4 * zg / tensor.sqrt(rg2 - rg ** 2 + 1e-4))
                  for ud, zg, rg, rg2 in zip(updir, zipped_grads, running_grads,
                                             running_grads2)]
     param_up = [(p, p + udn[1])
-                for p, udn in zip(tparams.values(), updir_new)]
+                for p, udn in zip(list(tparams.values()), updir_new)]
     f_update = theano.function([lr], [], updates=updir_new + param_up,
                                on_unused_input='ignore',
                                name='rmsprop_f_update')
@@ -255,7 +255,7 @@ def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 class lstm():    
     def __init__(self,nam,load=False,training=False):
         newp=creatrnnx()
-        for i in newp.keys():
+        for i in list(newp.keys()):
             if i[0]=='1':
                 newp['2'+i[1:]]=newp[i]
         y = tensor.vector('y', dtype=config.floatX)
@@ -286,21 +286,21 @@ class lstm():
         self.f_cost=theano.function([emb11,mask11,emb21,mask21,y],cost,allow_input_downcast=True)
         if training==True:
         
-            gradi = tensor.grad(cost, wrt=tnewp.values())#/bts
+            gradi = tensor.grad(cost, wrt=list(tnewp.values()))#/bts
             grads=[]
             l=len(gradi)
             for i in range(0,l/2):
                 gravg=(gradi[i]+gradi[i+l/2])/(4.0)
             #print i,i+9
                 grads.append(gravg)
-            for i in range(0,len(tnewp.keys())/2):
+            for i in range(0,len(list(tnewp.keys()))/2):
                     grads.append(grads[i])
         
             self.f_grad_shared, self.f_update = adadelta(lr, tnewp, grads,emb11,mask11,emb21,mask21,y, cost)
     
     
     def train_lstm(self,train,max_epochs):
-        print "Training"
+        print("Training")
         crer=[]
         cr=1.6
         freq=0
@@ -309,14 +309,14 @@ class lstm():
         valfreq=800# Validation frequency
         lrate=0.0001
         precision=2
-        for eidx in xrange(0,max_epochs):
+        for eidx in range(0,max_epochs):
             sta=time.time()
             #print self.chkterr2(test)
             num=len(train)
             nd=eidx
             sta=time.time()
-            print 'Epoch',eidx
-            rnd=sample(xrange(len(train)),len(train))
+            print('Epoch',eidx)
+            rnd=sample(range(len(train)),len(train))
             for i in range(0,num,batchsize):
                 q=[]
                 x=i+batchsize
@@ -344,9 +344,9 @@ class lstm():
                 s=self.f_update(lrate)
                 #s=f_update(lrate)
                 if np.mod(freq,dfreq)==0:
-                    print 'Epoch ', eidx, 'Update ', freq, 'Cost ', cst
+                    print('Epoch ', eidx, 'Update ', freq, 'Cost ', cst)
             sto=time.time()
-            print "epoch took:",sto-sta
+            print("epoch took:",sto-sta)
         
     def chkterr2(self,mydata):
         count=[]

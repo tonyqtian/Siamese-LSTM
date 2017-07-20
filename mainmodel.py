@@ -37,7 +37,7 @@ def chkterr2(mydata):
     return np.mean(np.square(px-yx)),meas.pearsonr(px,yx)[0],meas.spearmanr(yx,px)[0]
 
 def train_lstm(train,max_epochs):
-    print "Training"
+    print("Training")
     crer=[]
     cr=1.6
     freq=0
@@ -46,13 +46,13 @@ def train_lstm(train,max_epochs):
     valfreq=800# Validation frequency
     lrate=0.0001
     precision=2
-    for eidx in xrange(0,max_epochs):
+    for eidx in range(0,max_epochs):
         sta=time.time()
         num=len(train)
         nd=eidx
         sta=time.time()
-        print 'Epoch',eidx
-        rnd=sample(xrange(len(train)),len(train))
+        print('Epoch',eidx)
+        rnd=sample(range(len(train)),len(train))
         for i in range(0,num,batchsize):
             q=[]
             x=i+batchsize
@@ -84,14 +84,14 @@ def train_lstm(train,max_epochs):
             
             #s=f_update(lrate)
             if np.mod(freq,dfreq)==0:
-                print 'Epoch ', eidx, 'Update ', freq, 'Cost ', cst
+                print('Epoch ', eidx, 'Update ', freq, 'Cost ', cst)
         sto=time.time()
-        print "epoch took:",sto-sta
+        print("epoch took:",sto-sta)
 
 
-print training
+print(training)
 newp=creatrnnx()
-for i in newp.keys():
+for i in list(newp.keys()):
     if i[0]=='1':
         newp['2'+i[1:]]=newp[i]
 y = tensor.vector('y', dtype=config.floatX)
@@ -121,14 +121,14 @@ f2sim=theano.function([emb11,mask11,emb21,mask21],sim,allow_input_downcast=True)
 f_cost=theano.function([emb11,mask11,emb21,mask21,y],cost,allow_input_downcast=True)
 if training==True:
     
-    gradi = tensor.grad(cost, wrt=tnewp.values())#/bts
+    gradi = tensor.grad(cost, wrt=list(tnewp.values()))#/bts
     grads=[]
     l=len(gradi)
     for i in range(0,l/2):
         gravg=(gradi[i]+gradi[i+l/2])/(2.0)
         #print i,i+9
         grads.append(gravg)
-    for i in range(0,len(tnewp.keys())/2):
+    for i in range(0,len(list(tnewp.keys()))/2):
         grads.append(grads[i])
     
     f_grad_shared, f_update = adadelta(lr, tnewp, grads,emb11,mask11,emb21,mask21,y, cost)
@@ -136,9 +136,9 @@ if training==True:
 
 train=pickle.load(open("stsallrmf.p","rb"))#[:-8]
 if training==True:
-    print "Pre-training"
+    print("Pre-training")
     train_lstm(train,66)
-    print "Pre-training done"
+    print("Pre-training done")
     train=pickle.load(open("semtrain.p",'rb'))
     if Syn_aug==True:
         train=expand(train)
@@ -147,7 +147,7 @@ if training==True:
         train_lstm(train,330)
 
 test=pickle.load(open("semtest.p",'rb'))
-print chkterr2(test)
+print(chkterr2(test))
 
 #Example
 q=[["A truly wise man","He is smart",0]]
@@ -163,7 +163,7 @@ trconv2=np.dstack(ls2)
 emb2=np.swapaxes(trconv2,1,2)
 emb1=np.swapaxes(trconv,1,2)
 pred=(f2sim(emb1,mas1,emb2,mas2))*4.0+1.0
-print "Similarity of "
-print q[0][0],q[0][1]
-print "on a scale of 1-5" +str(pred[0])
+print("Similarity of ")
+print(q[0][0],q[0][1])
+print("on a scale of 1-5" +str(pred[0]))
 

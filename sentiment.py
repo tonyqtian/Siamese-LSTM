@@ -112,8 +112,8 @@ clf = SVC(C=100,gamma=3.1,kernel='rbf')
 # In[32]:
 
 scl=clf.fit(xtr,ytr)
-print "Training accuracy:",getacc(scl,xtr,ytr)
-print "Cross validation accuracy:",getacc(scl,xcr,ycr)
+print("Training accuracy:",getacc(scl,xtr,ytr))
+print("Cross validation accuracy:",getacc(scl,xcr,ycr))
 
 
 # In[ ]:

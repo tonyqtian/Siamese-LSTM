@@ -42,18 +42,18 @@ def numpy_floatX(data):
     return numpy.asarray(data, dtype=config.floatX)
 def zipp(params, tparams):
     
-    for kk, vv in params.iteritems():
+    for kk, vv in params.items():
         tparams[kk].set_value(vv)
 
 
 def unzip(zipped):
     new_params = OrderedDict()
-    for kk, vv in zipped.iteritems():
+    for kk, vv in zipped.items():
         new_params[kk] = vv.get_value()
     return new_params
 def init_tparams(params):
     tparams = OrderedDict()
-    for kk, pp in params.iteritems():
+    for kk, pp in params.items():
         tparams[kk] = theano.shared(params[kk], name=kk)
     return tparams
 
@@ -116,7 +116,7 @@ def getpl2(prevlayer,pre,mymask,used,rrng,size,tnewp):
                                         prefix=pre,
                                         mask=mymask,nhd=size)
     if used:
-        print "Added dropout"
+        print("Added dropout")
         proj = dropout_layer(proj, use_noise, rrng,0.5)
         
     return proj
@@ -172,13 +172,13 @@ def lstm_layer2(tparams, state_below, options, prefix='lstm', mask=None,nhd=None
 def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
-                    for k, p in tparams.iteritems()]
+                    for k, p in tparams.items()]
     running_up2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                  name='%s_rup2' % k)
-                   for k, p in tparams.iteritems()]
+                   for k, p in tparams.items()]
     running_grads2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                     name='%s_rgrad2' % k)
-                      for k, p in tparams.iteritems()]
+                      for k, p in tparams.items()]
 
     zgup = [(zg, g) for zg, g in zip(zipped_grads, grads)]
     rg2up = [(rg2, (0.95 * rg2 + 0.05* (g ** 2)))
@@ -193,7 +193,7 @@ def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
                                      running_grads2)]
     ru2up = [(ru2, (0.95 * ru2 + 0.05 * (ud ** 2)))
              for ru2, ud in zip(running_up2,updir)]
-    param_up = [(p, p + ud) for p, ud in zip(tparams.values(), updir)]
+    param_up = [(p, p + ud) for p, ud in zip(list(tparams.values()), updir)]
 
     f_update = theano.function([lr], [], updates=ru2up + param_up,
                                on_unused_input='ignore',
@@ -204,11 +204,11 @@ def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 def sgd(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     
     gshared = [theano.shared(p.get_value() * 0., name='%s_grad' % k)
-               for k, p in tparams.iteritems()]
+               for k, p in tparams.items()]
     gsup = [(gs, g) for gs, g in zip(gshared, grads)]
     f_grad_shared = theano.function([emb11,mask11,emb21,mask21,y], cost, updates=gsup,
                                     name='sgd_f_grad_shared')
-    pup = [(p, p - lr * g) for p, g in zip(tparams.values(), gshared)]
+    pup = [(p, p - lr * g) for p, g in zip(list(tparams.values()), gshared)]
     f_update = theano.function([lr], [], updates=pup,
                                name='sgd_f_update')
 
@@ -218,13 +218,13 @@ def sgd(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
-                    for k, p in tparams.iteritems()]
+                    for k, p in tparams.items()]
     running_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                    name='%s_rgrad' % k)
-                     for k, p in tparams.iteritems()]
+                     for k, p in tparams.items()]
     running_grads2 = [theano.shared(p.get_value() * numpy_floatX(0.),
                                     name='%s_rgrad2' % k)
-                      for k, p in tparams.iteritems()]
+                      for k, p in tparams.items()]
 
     zgup = [(zg, g) for zg, g in zip(zipped_grads, grads)]
     rgup = [(rg, 0.95 * rg + 0.05 * g) for rg, g in zip(running_grads, grads)]
@@ -237,12 +237,12 @@ def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
 
     updir = [theano.shared(p.get_value() * numpy_floatX(0.),
                            name='%s_updir' % k)
-             for k, p in tparams.iteritems()]
+             for k, p in tparams.items()]
     updir_new = [(ud, 0.9 * ud - 1e-4 * zg / tensor.sqrt(rg2 - rg ** 2 + 1e-4))
                  for ud, zg, rg, rg2 in zip(updir, zipped_grads, running_grads,
                                             running_grads2)]
     param_up = [(p, p + udn[1])
-                for p, udn in zip(tparams.values(), updir_new)]
+                for p, udn in zip(list(tparams.values()), updir_new)]
     f_update = theano.function([lr], [], updates=updir_new + param_up,
                                on_unused_input='ignore',
                                name='rmsprop_f_update')
@@ -388,7 +388,7 @@ def expand(data):
             if cnt1>0 and cnt2>0:
                 l1=[sa,sb,i[2]]
                 n.append(l1)
-    print len(n)
+    print(len(n))
     for i in n:
         if check(i[0],i[1],data):
             data.append(i)
@@ -417,7 +417,7 @@ flg=1
 cachedStopWords=stopwords.words("english")
 training=True #Loads best saved model if False
 Syn_aug=True # If true, performs better on Test dataset but longer training time
-print "Loading word2vec"
+print("Loading word2vec")
 model = word2vec.Word2Vec.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz",binary=True)
 options=locals().copy()
 

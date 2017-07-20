@@ -5,7 +5,7 @@ import gensim
 from gensim.models import word2vec
 d2=pickle.load(open("synsem.p",'rb'))
 dtr=pickle.load(open("dwords.p",'rb'))
-print "Loading Word2Vec"
+print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
 
 model = word2vec.Word2Vec.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz",binary=True)
@@ -147,7 +147,7 @@ def expand(data):
             if cnt1>0 and cnt2>0:
                 l1=[sa,sb,i[2]]
                 n.append(l1)
-    print len(n)
+    print(len(n))
     for i in n:
         if check(i[0],i[1],data):
             data.append(i)
