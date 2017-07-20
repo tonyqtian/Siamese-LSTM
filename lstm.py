@@ -399,7 +399,7 @@ class lstm():
         return self.f2sim(emb1,mas1,emb2,mas2)
 
 d2=pickle.load(open("synsem.p",'rb'))
-dtr=pickle.load(open("dwords.p",'rb'))
+dtr=pickle.load(open("dwords.p",'rb'), encoding='latin1')
 #d2=dtr
 #model=pickle.load(open("Semevalembed.p","rb"))
 

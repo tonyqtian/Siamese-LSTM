@@ -397,7 +397,7 @@ def expand(data):
 
 
 d2=pickle.load(open("synsem.p",'rb'))
-dtr=pickle.load(open("dwords.p",'rb'))
+dtr=pickle.load(open("dwords.p",'rb'), encoding='latin1')
 #d2=dtr
 #model=pickle.load(open("Semevalembed.p","rb"))
 
