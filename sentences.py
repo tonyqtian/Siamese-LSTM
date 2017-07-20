@@ -3,7 +3,7 @@ import numpy
 import pickle
 import gensim
 # from gensim.models import word2vec
-d2=pickle.load(open("synsem.p",'rb'))
+d2=pickle.load(open("synsem.p",'rb'), encoding='latin1')
 dtr=pickle.load(open("dwords.p", 'rb'), encoding='latin1')
 print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
