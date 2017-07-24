@@ -1,4 +1,8 @@
 from SiameseLSTM import *
+from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+import time
+import scipy.stats as meas
+import theano.tensor as T
 
 def chkterr2(mydata):
     count=[]
@@ -124,11 +128,11 @@ if training==True:
     gradi = tensor.grad(cost, wrt=list(tnewp.values()))#/bts
     grads=[]
     l=len(gradi)
-    for i in range(0,l/2):
+    for i in range(0,l//2):
         gravg=(gradi[i]+gradi[i+l/2])/(2.0)
         #print i,i+9
         grads.append(gravg)
-    for i in range(0,len(list(tnewp.keys()))/2):
+    for i in range(0,len(list(tnewp.keys()))//2):
         grads.append(grads[i])
     
     f_grad_shared, f_update = adadelta(lr, tnewp, grads,emb11,mask11,emb21,mask21,y, cost)

@@ -1,40 +1,31 @@
 
-# coding: utf-8
-
-# In[2]:
-
-
-
-
-# In[1]:
-import gensim
-from gensim.models import word2vec
-import pickle
+# import gensim
+# from gensim.models import word2vec
+# import pickle
 import numpy as np
-import numpy
+# import numpy
 import pickle
 from random import *
-import theano.tensor as T
+# import theano.tensor as T
 def _p(pp, name):
     return '%s_%s' % (pp, name)
-import re
+# import re
 from nltk.corpus import stopwords
-import scipy.stats as meas
+# import scipy.stats as meas
 
 from gensim.models import word2vec
 
-
 from collections import OrderedDict
-import pickle as pkl
+# import pickle as pkl
 import random
-import sys
-import time
+# import sys
+# import time
 
 import numpy
 import theano
 from theano import config
 import theano.tensor as tensor
-from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+# from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 
 

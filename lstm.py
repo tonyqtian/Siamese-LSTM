@@ -1,36 +1,28 @@
 
-# coding: utf-8
-
-# In[2]:
-
-
-
-
-# In[1]:
-import gensim
-from gensim.models import word2vec
-import pickle
-import numpy as np
-import numpy
-import pickle
+# import gensim
+# from gensim.models import word2vec
+# import pickle
+# import numpy as np
+# import numpy
+# import pickle
 from random import *
 import theano.tensor as T
 def _p(pp, name):
     return '%s_%s' % (pp, name)
-import re
+# import re
 from nltk.corpus import stopwords
 import scipy.stats as meas
 
-from gensim.models import word2vec
+# from gensim.models import word2vec
 
 
 from collections import OrderedDict
-import pickle as pkl
-import random
-import sys
+# import pickle as pkl
+# import random
+# import sys
 import time
 
-import numpy
+# import numpy
 import theano
 from theano import config
 import theano.tensor as tensor
@@ -289,11 +281,11 @@ class lstm():
             gradi = tensor.grad(cost, wrt=list(tnewp.values()))#/bts
             grads=[]
             l=len(gradi)
-            for i in range(0,l/2):
+            for i in range(0,l//2):
                 gravg=(gradi[i]+gradi[i+l/2])/(4.0)
             #print i,i+9
                 grads.append(gravg)
-            for i in range(0,len(list(tnewp.keys()))/2):
+            for i in range(0,len(list(tnewp.keys()))//2):
                     grads.append(grads[i])
         
             self.f_grad_shared, self.f_update = adadelta(lr, tnewp, grads,emb11,mask11,emb21,mask21,y, cost)
