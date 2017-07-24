@@ -282,7 +282,7 @@ class lstm():
             grads=[]
             l=len(gradi)
             for i in range(0,l//2):
-                gravg=(gradi[i]+gradi[i+l/2])/(4.0)
+                gravg=(gradi[i]+gradi[i+l//2])/(4.0)
             #print i,i+9
                 grads.append(gravg)
             for i in range(0,len(list(tnewp.keys()))//2):
