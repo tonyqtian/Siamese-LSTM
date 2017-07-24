@@ -1,6 +1,6 @@
 from lstm import *
-#training=True # Set to false to load weights
-#Syn_aug=True # it False faster but does slightly worse on Test dataset
+training=True # Set to false to load weights
+Syn_aug=True # it False faster but does slightly worse on Test dataset
 
 sls=lstm("new.p",load=False,training=True)
 

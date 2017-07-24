@@ -32,8 +32,20 @@ from sentences import *
 
 def numpy_floatX(data):
     return numpy.asarray(data, dtype=config.floatX)
+
+
+prefix='lstm'
+noise_std=0.
+use_noise = theano.shared(numpy_floatX(0.))
+flg=1
+cachedStopWords=stopwords.words("english")
+training=False #Loads best saved model if False
+Syn_aug=True # If true, performs better on Test dataset but longer training time
+
+options=locals().copy()
+
+
 def zipp(params, tparams):
-    
     for kk, vv in params.items():
         tparams[kk].set_value(vv)
 
@@ -400,15 +412,7 @@ dtr=pickle.load(open("dwords.p",'rb'), encoding='latin1')
 
 # In[9]:
 
-prefix='lstm'
-noise_std=0.
-use_noise = theano.shared(numpy_floatX(0.))
-flg=1
-cachedStopWords=stopwords.words("english")
-training=False #Loads best saved model if False
-Syn_aug=True # If true, performs better on Test dataset but longer training time
 
-options=locals().copy()
 
 
 # In[ ]:
