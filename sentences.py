@@ -3,18 +3,18 @@ import numpy
 import pickle
 import gensim
 import random
+from nltk.corpus import stopwords
+cachedStopWords=stopwords.words("english")
+
 # from gensim.models import word2vec
 d2=pickle.load(open("synsem.p",'rb'), encoding='latin1')
 dtr=pickle.load(open("dwords.p", 'rb'), encoding='latin1')
+
 print("Loading Word2Vec")
 #model=np.load("modelgensim.npy").item()
 
 model = gensim.models.KeyedVectors.load_word2vec_format("../GoogleNews-vectors-negative300.bin.gz",binary=True)
-# with open("../quora-data/gl_w2v_300d_gensim.pkl", 'wb') as outputfile:
-#     pickle.dump(model, outputfile)
 
-# with open("../quora-data/gl_w2v_300d_gensim.pkl", 'rb') as inputfile:
-#     model = pickle.load(inputfile)
 
 def prepare_data(data):
     xa1=[]
@@ -36,6 +36,8 @@ def prepare_data(data):
     
     y2=np.array(y2,dtype=np.float32)
     return emb1,mas1,emb2,mas2,y2
+
+
 def getmtr(xa,maxlen):
     n_samples = len(xa)
     ls=[]
@@ -50,10 +52,6 @@ def getmtr(xa,maxlen):
     xa=np.array(ls)
     return xa,x_mask
 
-
-# In[4]:
-
-#new embed
 
 def embed(stmx):
     #stmx=stmx.split()
@@ -70,13 +68,6 @@ def embed(stmx):
             dmtr[count]=model[stmx[count]]
             count+=1
     return dmtr
-
-
-    
-
-
-# In[5]:
-
 
 
 def chsyn(s,trn):
@@ -129,10 +120,12 @@ def chsyn(s,trn):
             mst=''
     return ' '.join(x),cnt
 
+
 def findsim(wd):
     syns=d2[wd]
     x=random.randint(0,len(syns)-1)
     return syns[x]
+
 
 def check(sa,sb,dat):
     for i in dat:
@@ -141,6 +134,7 @@ def check(sa,sb,dat):
         if sa==i[1] and sb==i[0]:
             return False
     return True
+
 
 def expand(data):
     n=[]

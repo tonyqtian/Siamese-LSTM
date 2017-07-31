@@ -28,9 +28,10 @@ import theano.tensor as tensor
 # from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 
-
 def numpy_floatX(data):
     return numpy.asarray(data, dtype=config.floatX)
+
+
 def zipp(params, tparams):
     
     for kk, vv in params.items():
@@ -42,20 +43,23 @@ def unzip(zipped):
     for kk, vv in zipped.items():
         new_params[kk] = vv.get_value()
     return new_params
+
+
 def init_tparams(params):
     tparams = OrderedDict()
     for kk, pp in params.items():
         tparams[kk] = theano.shared(params[kk], name=kk)
     return tparams
 
+
 def get_layer(name):
     fns = layers[name]
     return fns
 
-# In[2]:
 
 def genm(mu,sigma,n1,n2):
     return np.random.normal(mu,sigma,(n1,n2))
+
 
 def getlayerx(d,pref,n,nin):
     mu=0.0
@@ -72,6 +76,7 @@ def getlayerx(d,pref,n,nin):
     d[_p(pref, 'W')] = W
     d[_p(pref, 'b')] = b.astype(config.floatX)
     return d
+
 
 def creatrnnx():
     newp=OrderedDict()
@@ -93,14 +98,12 @@ def creatrnnx():
     return newp
 
 
-# In[3]:
-
-
 def dropout_layer(state_before, use_noise, rrng,rate):
     proj = tensor.switch(use_noise,
                          (state_before *rrng),
                          state_before * (1-rate))
     return proj
+
 
 def getpl2(prevlayer,pre,mymask,used,rrng,size,tnewp):
     proj = lstm_layer2(tnewp, prevlayer, options,
@@ -111,6 +114,7 @@ def getpl2(prevlayer,pre,mymask,used,rrng,size,tnewp):
         proj = dropout_layer(proj, use_noise, rrng,0.5)
         
     return proj
+
 
 def lstm_layer2(tparams, state_below, options, prefix='lstm', mask=None,nhd=None):
     nsteps = state_below.shape[0]
@@ -160,6 +164,7 @@ def lstm_layer2(tparams, state_below, options, prefix='lstm', mask=None,nhd=None
                                 n_steps=nsteps)
     return hvals
 
+
 def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
@@ -191,6 +196,7 @@ def adadelta(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
                                name='adadelta_f_update')
 
     return f_grad_shared, f_update
+
 
 def sgd(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
     
@@ -239,6 +245,8 @@ def rmsprop(lr, tparams, grads, emb11,mask11,emb21,mask21,y, cost):
                                name='rmsprop_f_update')
 
     return f_grad_shared, f_update
+
+
 def prepare_data(data):
     xa1=[]
     xb1=[]
@@ -259,6 +267,8 @@ def prepare_data(data):
     
     y2=np.array(y2,dtype=np.float32)
     return emb1,mas1,emb2,mas2,y2
+
+
 def getmtr(xa,maxlen):
     n_samples = len(xa)
     ls=[]
@@ -272,11 +282,6 @@ def getmtr(xa,maxlen):
         ls.append(q)
     xa=np.array(ls)
     return xa,x_mask
-
-
-# In[4]:
-
-#new embed
 
 def embed(stmx):
     #stmx=stmx.split()
@@ -294,15 +299,12 @@ def embed(stmx):
             count+=1
     return dmtr
 
-    
-
-
-# In[5]:
 
 def pfl(s):
     for i in dtr['syn'][0]:
         s.append(i)
     return s
+
 
 def chsyn(s,trn):
     cnt=0
@@ -357,10 +359,12 @@ def chsyn(s,trn):
             mst=''
     return ' '.join(x),cnt
 
+
 def findsim(wd):
     syns=d2[wd]
     x=random.randint(0,len(syns)-1)
     return syns[x]
+
 
 def check(sa,sb,dat):
     for i in dat:
@@ -369,6 +373,7 @@ def check(sa,sb,dat):
         if sa==i[1] and sb==i[0]:
             return False
     return True
+
 
 def expand(data):
     n=[]
@@ -392,15 +397,6 @@ dtr=pickle.load(open("dwords.p",'rb'), encoding='latin1')
 #d2=dtr
 #model=pickle.load(open("Semevalembed.p","rb"), encoding='latin1')
 
-
-# In[7]:
-
-## import pickle
-#from random import shuffle
-
-
-# In[9]:
-
 prefix='lstm'
 noise_std=0.
 use_noise = theano.shared(numpy_floatX(0.))
@@ -411,9 +407,3 @@ Syn_aug=True # If true, performs better on Test dataset but longer training time
 print("Loading word2vec")
 model = word2vec.Word2Vec.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz",binary=True)
 options=locals().copy()
-
-
-# In[ ]:
-
-
-
